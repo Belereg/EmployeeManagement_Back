@@ -15,25 +15,27 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "iduser")
     private int id;
+
     @Column(name = "firstName")
     private String firstName;
+
     @Column(name = "lastName")
     private String lastName;
+
     private String username;
     private String password;
     private String email;
+
     @Column(name = "birthday")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate birthday;
 
-
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL )
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-   private List<Role> roleList;
-
+    private List<Role> roleList;
 
     @Transient
     private boolean isAdmin;
@@ -93,7 +95,6 @@ public class User {
     public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
-
 
     public List<Role> getRoleList() {
         return roleList;
