@@ -18,9 +18,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private RoleRepository roleRepository;
-
 
     public Role saveRole(Role role) {
 
@@ -28,68 +28,46 @@ public class UserService {
         return this.roleRepository.save(role);
     }
 
-
     public User saveUser(User user) {
 
 
         return this.userRepository.save(user);
     }
 
-    public User saveUser2(User user ,int idRole)
-    {
+    public User saveUser2(User user, int idRole) {
 
-       Role role= this.roleRepository.findById(idRole).get();
+        Role role = this.roleRepository.findById(idRole).get();
 
-       List<Role> roleList =new ArrayList<>();
-       roleList.add(role);
+        List<Role> roleList = new ArrayList<>();
+        roleList.add(role);
 
-       if(role!=null) {
-
-           user.setRoleList(roleList);
-           return this.userRepository.save(user);
-       }
-       else
-       {
-           throw new RuntimeException("Role not found");
-       }
-
-
+        if (role != null) {
+            user.setRoleList(roleList);
+            return this.userRepository.save(user);
+        } else {
+            throw new RuntimeException("Role not found");
+        }
     }
 
-
-    public User saveUser3(  User user ,List<Role> roleList)
-    {
+    public User saveUser3(User user, List<Role> roleList) {
         user.setRoleList(roleList);
         return this.userRepository.save(user);
 
     }
 
-
-
-    public Role findRoleById(int id)
-    {
+    public Role findRoleById(int id) {
         return this.roleRepository.findById(id).get();
-
     }
 
-    public List<Role> findAllRoles()
-    {
+    public List<Role> findAllRoles() {
         return this.roleRepository.findAll();
     }
 
-
-    public List<User> findAllUsers()
-    {
+    public List<User> findAllUsers() {
         return this.userRepository.findAll();
     }
 
-
-    public void deleteUserById(int id)
-    {
-         this.userRepository.deleteById(id);
+    public void deleteUserById(int id) {
+        this.userRepository.deleteById(id);
     }
-
-
-
-
 }

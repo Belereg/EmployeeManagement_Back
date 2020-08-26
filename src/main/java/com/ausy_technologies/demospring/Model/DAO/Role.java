@@ -1,8 +1,6 @@
 package com.ausy_technologies.demospring.Model.DAO;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -13,6 +11,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
+
     @Column(name = "name")
     private String name;
 
@@ -31,5 +30,4 @@ public class Role {
     public void setName(String name) {
         this.name = name;
     }
-
 }

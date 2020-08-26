@@ -15,62 +15,44 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-// Laurentiu a facut o treaba foarte buna
-
     @PostMapping("/addRole")
     public Role saveRole(@RequestBody Role role) {
-
-
-        Role roleAdded = this.userService.saveRole(role);
-        return roleAdded;
+        return this.userService.saveRole(role);
     }
-
-
-
 
     @PostMapping("/addUser")
     public User saveUser(@RequestBody User user) {
-        User userAdded = this.userService.saveUser(user);
-        return userAdded;
+        return this.userService.saveUser(user);
     }
 
     @PostMapping("/addUser2/{idRole}")
-    public User saveUser2(@RequestBody User user, @PathVariable int idRole)
-    {
-        return this.userService.saveUser2(user,idRole);
-
+    public User saveUser2(@RequestBody User user, @PathVariable int idRole) {
+        return this.userService.saveUser2(user, idRole);
     }
 
     @PostMapping("/addUser3/{roleList}")
-    public User saveUser3(@RequestBody User user , @PathVariable List<Role> roleList)
-    {
-        return this.userService.saveUser3(user,roleList);
+    public User saveUser3(@RequestBody User user, @PathVariable List<Role> roleList) {
+        return this.userService.saveUser3(user, roleList);
     }
 
     @GetMapping("/findRoleBy/{id}")
-    public Role findRoleById(@PathVariable int id)
-    {
-  return this.userService.findRoleById(id);
+    public Role findRoleById(@PathVariable int id) {
+        return this.userService.findRoleById(id);
     }
 
     @GetMapping("/findAllRoles")
-    public List<Role> findAllRoles()
-    {
-        return  userService.findAllRoles();
+    public List<Role> findAllRoles() {
+        return userService.findAllRoles();
     }
 
-
     @GetMapping("/allUsers")
-    public List<User> findAllUsers()
-    {
+    public List<User> findAllUsers() {
         return this.userService.findAllUsers();
     }
 
     @DeleteMapping("/deleteUserById/{id}")
-    public void deleteUser(@PathVariable int id)
-    {
+    public void deleteUser(@PathVariable int id) {
         this.userService.deleteUserById(id);
-
     }
 
 }
