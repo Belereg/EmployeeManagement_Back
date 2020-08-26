@@ -15,7 +15,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
+// Laurentiu a facut o treaba foarte buna
 
     @PostMapping("/addRole")
     public Role saveRole(@RequestBody Role role) {
