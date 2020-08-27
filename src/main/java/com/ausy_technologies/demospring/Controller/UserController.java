@@ -49,8 +49,7 @@ public class UserController {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("Responded", "addUser");
             return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(newUser);
-        }
-        else
+        } else
             throw new RuntimeException("User is NOT valid");
     }
 
@@ -91,8 +90,7 @@ public class UserController {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("Responded", "addUser2");
             return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(newUser);
-        }
-        else
+        } else
             throw new RuntimeException("User is NOT valid");
     }
 
@@ -107,12 +105,16 @@ public class UserController {
         User newUser = this.userService.saveUser3(user, roleList);
 
         if (checkValid(user) != null && !roleList.isEmpty()) {
+            for (int i = 0; i < roleList.size(); i++) {
+                if (roleList.get(i) == null || roleList.get(i).toString().isEmpty()) {
+                    throw new RuntimeException("Roles are NOT valid");
+                }
+            }
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("Responded", "addUser3");
             return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(newUser);
-        }
-        else
-            throw new RuntimeException("User is NOT valid");
+        } else
+            throw new RuntimeException("Roles are NOT valid");
     }
 
     @PostMapping("/addUser3/{roleList}")
@@ -123,6 +125,8 @@ public class UserController {
     @GetMapping("/findRoleBy/{id}")
     public Role findRoleById(@PathVariable int id) {
 
+        if (id < 1)
+            throw new RuntimeException("Id is NOT valid");
         return this.userService.findRoleById(id);
     }
 
@@ -138,20 +142,10 @@ public class UserController {
 
     @DeleteMapping("/deleteUserById/{id}")
     public void deleteUser(@PathVariable int id) {
+
+        if (id < 1)
+            throw new RuntimeException("Id is NOT valid");
         this.userService.deleteUserById(id);
     }
 
-    @GetMapping("/hello")
-    ResponseEntity<String> hello() {
-        return new ResponseEntity<>("Hello World!", HttpStatus.OK);
-    }
-
-    @GetMapping("/customHeader")
-    ResponseEntity<String> customHeader() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Custom-Header", "foo");
-
-        return new ResponseEntity<>(
-                "Custom header set", headers, HttpStatus.OK);
-    }
 }
