@@ -1,5 +1,6 @@
 package com.ausy_technologies.demospring.Service;
 
+import com.ausy_technologies.demospring.Controller.ErrorResponse;
 import com.ausy_technologies.demospring.Model.DAO.Role;
 import com.ausy_technologies.demospring.Model.DAO.User;
 import com.ausy_technologies.demospring.Repository.RoleRepository;
@@ -43,6 +44,7 @@ public class UserService {
             throw new RuntimeException("Role not found");
         }
     }
+
     public User saveUser3(User user, List<Role> roleList) {
         user.setRoleList(roleList);
         return this.userRepository.save(user);
@@ -63,4 +65,42 @@ public class UserService {
     public void deleteUserById(int id) {
         this.userRepository.deleteById(id);
     }
+
+    public void deleteRoleById(int id){
+        roleRepository.deleteById(id);
+    }
+
+    public Role updateRole(int id, String name){
+        Role newRole = null;
+        try{
+            newRole = roleRepository.findById(id).get();
+            newRole.setName(name);
+            roleRepository.save(newRole);
+        }catch (RuntimeException e){
+            throw new RuntimeException("Role NOT found !");
+        }
+        return newRole;
+    }
+
+    public User updateUser(int id, User user){
+        User modifiedUser = userRepository.findById(id);
+
+        if(modifiedUser != null){
+
+            modifiedUser.setRoleList(user.getRoleList());
+            modifiedUser.setFirstName(user.getFirstName());
+            modifiedUser.setLastName(user.getLastName());
+            modifiedUser.setEmail(user.getEmail());
+            modifiedUser.setUsername(user.getUsername());
+            modifiedUser.setPassword(user.getPassword());
+            userRepository.save(modifiedUser);
+        }
+        else {
+            throw new ErrorResponse("User NOT found !",404);
+        }
+        return modifiedUser;
+    }
+
+
+
 }

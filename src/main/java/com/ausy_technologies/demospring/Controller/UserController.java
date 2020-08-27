@@ -45,7 +45,7 @@ public class UserController {
 
         User newUser = this.userService.saveUser(user);
 
-        if (checkValid(user) != null) {
+        if (checkValid(user) == null) {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("Responded", "addUser");
             return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(newUser);
@@ -86,7 +86,7 @@ public class UserController {
 
         User newUser = this.userService.saveUser(user);
 
-        if (checkValid(user) != null && idRole > 0) {
+        if (checkValid(user) == null && idRole > 0) {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("Responded", "addUser2");
             return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(newUser);
@@ -104,7 +104,7 @@ public class UserController {
 
         User newUser = this.userService.saveUser3(user, roleList);
 
-        if (checkValid(user) != null && !roleList.isEmpty()) {
+        if (checkValid(user) == null && !roleList.isEmpty()) {
             for (int i = 0; i < roleList.size(); i++) {
                 if (roleList.get(i) == null || roleList.get(i).toString().isEmpty()) {
                     throw new RuntimeException("Roles are NOT valid");
@@ -114,7 +114,7 @@ public class UserController {
             httpHeaders.add("Responded", "addUser3");
             return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(newUser);
         } else
-            throw new RuntimeException("Roles are NOT valid");
+            throw new ErrorResponse("Roles are NOT valid",404);
     }
 
     @PostMapping("/addUser3/{roleList}")
@@ -126,7 +126,7 @@ public class UserController {
     public Role findRoleById(@PathVariable int id) {
 
         if (id < 1)
-            throw new RuntimeException("Id is NOT valid");
+            throw new ErrorResponse("Id is NOT valid",404);
         return this.userService.findRoleById(id);
     }
 
@@ -144,8 +144,41 @@ public class UserController {
     public void deleteUser(@PathVariable int id) {
 
         if (id < 1)
-            throw new RuntimeException("Id is NOT valid");
+            throw new ErrorResponse("Id is NOT valid",404);
         this.userService.deleteUserById(id);
     }
 
+    @DeleteMapping("deleteRole/{id}")
+    public void deleteRoleById(@PathVariable int id){
+        userService.deleteRoleById(id);
+    }
+
+    @PutMapping("/updateRole/{name}")
+    public ResponseEntity<Role> updateRole(@PathVariable String name, @RequestParam int id){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Response","updateRole");
+        Role updatedRole =  null;
+        try {
+            updatedRole = userService.updateRole(id,name);
+        }catch (ErrorResponse e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(httpHeaders).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.RESET_CONTENT).headers(httpHeaders).body(updatedRole);
+    }
+
+    @PutMapping("/updateUser")
+    public ResponseEntity<User> updateUser(@RequestParam int id, @RequestBody User user){
+        User updatedUser = null;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Response","updateUser");
+        try{
+            updatedUser = userService.updateUser(id,user);
+
+        }catch (ErrorResponse errorResponse){
+            errorResponse.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(httpHeaders).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(updatedUser);
+    }
 }
