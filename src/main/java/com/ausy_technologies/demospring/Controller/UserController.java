@@ -2,6 +2,7 @@ package com.ausy_technologies.demospring.Controller;
 
 import com.ausy_technologies.demospring.Model.DAO.Role;
 import com.ausy_technologies.demospring.Model.DAO.User;
+import com.ausy_technologies.demospring.Model.DTO.UserDto;
 import com.ausy_technologies.demospring.Repository.DateValidator;
 import com.ausy_technologies.demospring.Service.DateValidatorUsingDateFormat;
 import com.ausy_technologies.demospring.Service.UserService;
@@ -130,6 +131,13 @@ public class UserController {
         return this.userService.findRoleById(id);
     }
 
+    @GetMapping("findUserBy/{id}")
+    public User findUserById(@PathVariable int id){
+        if (id < 1)
+            throw new ErrorResponse("Id is NOT valid",404);
+        return this.userService.findUserById(id);
+    }
+
     @GetMapping("/findAllRoles")
     public List<Role> findAllRoles() {
         return userService.findAllRoles();
@@ -180,5 +188,33 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(httpHeaders).body(null);
         }
         return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(updatedUser);
+    }
+
+    @GetMapping("/findUserDtoById/{id}")
+    public ResponseEntity<UserDto> findUserDtoById(@PathVariable int id) {
+        User user = null;
+        UserDto userDto = null;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Responded", "updateUserRole");
+
+        try {
+            user = this.userService.findUserById(id);
+            userDto = this.userService.convertToDto(user);
+        }catch (ErrorResponse errorResponse) {
+            errorResponse.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(httpHeaders).body(userDto);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(userDto);
+    }
+
+    @GetMapping("/findAllUsersDto")
+    public ResponseEntity<List<UserDto>> findAllUsersDto() {
+        List<User> userList = this.userService.findAllUsers();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        List<UserDto> userDtos = this.userService.convertListToDto(userList);
+
+        httpHeaders.add("Responded", "findAllUsersDto");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).headers(httpHeaders).body(userDtos);
     }
 }
