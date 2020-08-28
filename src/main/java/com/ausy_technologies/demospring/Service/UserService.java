@@ -3,8 +3,10 @@ package com.ausy_technologies.demospring.Service;
 import com.ausy_technologies.demospring.Controller.ErrorResponse;
 import com.ausy_technologies.demospring.Model.DAO.Role;
 import com.ausy_technologies.demospring.Model.DAO.User;
+import com.ausy_technologies.demospring.Model.DTO.UserDto;
 import com.ausy_technologies.demospring.Repository.RoleRepository;
 import com.ausy_technologies.demospring.Repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +56,10 @@ public class UserService {
         return this.roleRepository.findById(id).get();
     }
 
+    public User findUserById(int id) {
+        return this.userRepository.findById(id);
+    }
+
     public List<Role> findAllRoles() {
         return this.roleRepository.findAll();
     }
@@ -66,26 +72,26 @@ public class UserService {
         this.userRepository.deleteById(id);
     }
 
-    public void deleteRoleById(int id){
+    public void deleteRoleById(int id) {
         roleRepository.deleteById(id);
     }
 
-    public Role updateRole(int id, String name){
+    public Role updateRole(int id, String name) {
         Role newRole = null;
-        try{
+        try {
             newRole = roleRepository.findById(id).get();
             newRole.setName(name);
             roleRepository.save(newRole);
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             throw new RuntimeException("Role NOT found !");
         }
         return newRole;
     }
 
-    public User updateUser(int id, User user){
+    public User updateUser(int id, User user) {
         User modifiedUser = userRepository.findById(id);
 
-        if(modifiedUser != null){
+        if (modifiedUser != null) {
 
             modifiedUser.setRoleList(user.getRoleList());
             modifiedUser.setFirstName(user.getFirstName());
@@ -94,13 +100,32 @@ public class UserService {
             modifiedUser.setUsername(user.getUsername());
             modifiedUser.setPassword(user.getPassword());
             userRepository.save(modifiedUser);
-        }
-        else {
-            throw new ErrorResponse("User NOT found !",404);
+        } else {
+            throw new ErrorResponse("User NOT found !", 404);
         }
         return modifiedUser;
     }
 
+    public UserDto convertToDto(User user) {
+        ModelMapper modelMapper = new ModelMapper();
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+        List<String> roleList = new ArrayList<>();
 
+        for (Role role : user.getRoleList())
+            roleList.add(role.getName());
 
+        userDto.setRoleList(roleList);
+        return userDto;
+    }
+
+    public List<UserDto> convertListToDto(List<User> userList) {
+        UserDto userDto;
+        List<UserDto> userDtos = new ArrayList<>();
+
+        for (User user : userList) {
+            userDto = convertToDto(user);
+            userDtos.add(userDto);
+        }
+        return userDtos;
+    }
 }
